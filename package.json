@@ -1,0 +1,15 @@
+{
+  "name": "onelib-showcase",
+  "version": "1.0.0",
+  "description": "Complete website built with OneLib.js to showcase its capabilities",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 3000",
+    "install-onelib": "npm install @gamedevayaan/onelib"
+  },
+  "dependencies": {
+    "@gamedevayaan/onelib": "^1.0.1"
+  },
+  "author": "GameDev Ayaan",
+  "license": "MIT"
+}

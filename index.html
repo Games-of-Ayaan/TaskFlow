@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Complete App Built with OneLib.js</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .app-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #fa709a, #fee140);
+        }
+
+        .task-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item.completed {
+            opacity: 0.7;
+            border-left-color: #28a745;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .task-title {
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .task-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .analytics-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .analytics-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .analytics-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .chart-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-info h3 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .user-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-results {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: none;
+        }
+
+        .search-result {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .search-result:hover {
+            background: #f8f9fa;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>TaskFlow</h1>
+            <p>Complete Task Management App Built Entirely with OneLib.js</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="functions-used">0</div>
+                    <div class="stat-label">OneLib Functions Used</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="lines-saved">0</div>
+                    <div class="stat-label">Lines of Code Saved</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="dev-time">0</div>
+                    <div class="stat-label">Hours Saved</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-grid">
+            <!-- User Profile Section -->
+            <div class="app-section">
+                <h2 class="section-title">User Profile</h2>
+                <div class="user-profile">
+                    <div class="avatar" id="user-avatar">JD</div>
+                    <div class="user-info">
+                        <h3 id="user-name">John Doe</h3>
+                        <p id="user-email">john.doe@example.com</p>
+                        <p id="user-joined">Joined 2 days ago</p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Update Name</label>
+                    <input type="text" class="form-input" id="name-input" placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Update Email</label>
+                    <input type="email" class="form-input" id="email-input" placeholder="Enter your email">
+                </div>
+                
+                <button class="btn" onclick="updateProfile()">Update Profile</button>
+                <button class="btn btn-secondary" onclick="generateAvatar()">Random Avatar</button>
+            </div>
+
+            <!-- Task Management Section -->
+            <div class="app-section">
+                <h2 class="section-title">Task Manager</h2>
+                
+                <div class="search-box">
+                    <input type="text" class="form-input" id="task-search" placeholder="Search tasks..." oninput="searchTasks()">
+                    <div class="search-results" id="search-results"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>New Task</label>
+                    <input type="text" class="form-input" id="task-input" placeholder="Enter task description">
+                </div>
+                
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select class="form-input" id="task-priority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="addTask()">Add Task</button>
+                <button class="btn btn-secondary" onclick="clearCompleted()">Clear Completed</button>
+                <button class="btn btn-danger" onclick="clearAllTasks()">Clear All</button>
+                
+                <div id="task-list" style="margin-top: 20px; max-height: 400px; overflow-y: auto;"></div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="app-section full-width">
+                <h2 class="section-title">Analytics Dashboard</h2>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="analytics-number" id="total-tasks">0</div>
+                        <div class="analytics-label">Total Tasks</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-number" id="completed-tasks">0</div>
+                        <div class="analytics-label">Completed</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-number" id="pending-tasks">0</div>
+                        <div class="analytics-label">Pending</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-number" id="completion-rate">0%</div>
+                        <div class="analytics-label">Completion Rate</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-number" id="avg-task-length">0</div>
+                        <div class="analytics-label">Avg Task Length</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-number" id="productivity-score">0</div>
+                        <div class="analytics-label">Productivity Score</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Task Completion Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <p id="progress-text">0 of 0 tasks completed</p>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-success" onclick="generateSampleData()">Generate Sample Data</button>
+                    <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+                    <button class="btn" onclick="calculateProductivity()">Calculate Productivity</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Include OneLib.js locally -->
+    <script src="onelib.js"></script>
+    
+    <script>
+        // Initialize app data using OneLib
+        let userData = OneLib.load('userData') || {
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+            joinDate: OneLib.now(),
+            avatar: 'JD'
+        };
+
+        let tasks = OneLib.load('tasks') || [];
+        let functionsUsed = new Set();
+        let linesSaved = 0;
+
+        // Track OneLib function usage
+        function trackFunction(funcName, linesSavedCount = 3) {
+            functionsUsed.add(funcName);
+            linesSaved += linesSavedCount;
+            // Update stats without tracking to avoid recursion
+            OneLib.html('#functions-used', functionsUsed.size);
+            OneLib.html('#lines-saved', linesSaved);
+            OneLib.html('#dev-time', OneLib.round(linesSaved / 10, 1));
+        }
+
+        function updateStats() {
+            OneLib.html('#functions-used', functionsUsed.size);
+            OneLib.html('#lines-saved', linesSaved);
+            OneLib.html('#dev-time', OneLib.round(linesSaved / 10, 1)); // Estimate 10 lines per hour saved
+        }
+
+        // Initialize user profile
+        function initUserProfile() {
+            OneLib.html('#user-name', userData.name);
+            OneLib.html('#user-email', userData.email);
+            OneLib.html('#user-joined', `Joined ${OneLib.since(userData.joinDate)}`);
+            OneLib.html('#user-avatar', userData.avatar);
+            trackFunction('html', 1);
+            trackFunction('since', 3);
+        }
+
+        // Update user profile
+        function updateProfile() {
+            const nameInput = OneLib.select('#name-input').value;
+            const emailInput = OneLib.select('#email-input').value;
+            
+            if (!OneLib.isempty(nameInput)) {
+                userData.name = OneLib.capitalize(OneLib.trim(nameInput));
+                userData.avatar = OneLib.words(userData.name).map(w => w[0]).join('').toUpperCase();
+                trackFunction('isempty', 2);
+                trackFunction('capitalize', 2);
+                trackFunction('trim', 1);
+                trackFunction('words', 3);
+            }
+            
+            if (!OneLib.isempty(emailInput)) {
+                userData.email = OneLib.lower(OneLib.trim(emailInput));
+                trackFunction('lower', 1);
+                trackFunction('trim', 1);
+            }
+            
+            OneLib.save('userData', userData);
+            initUserProfile();
+            showNotification('Profile updated successfully!');
+            
+            // Clear inputs
+            OneLib.select('#name-input').value = '';
+            OneLib.select('#email-input').value = '';
+            
+            trackFunction('save', 2);
+            trackFunction('select', 1);
+        }
+
+        // Generate random avatar
+        function generateAvatar() {
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4'];
+            const randomColor = colors[OneLib.randint(0, colors.length - 1)];
+            const avatarEl = OneLib.select('#user-avatar');
+            OneLib.css(avatarEl, { backgroundColor: randomColor });
+            
+            // Also generate random initials
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const randomInitials = letters[OneLib.randint(0, 25)] + letters[OneLib.randint(0, 25)];
+            OneLib.html(avatarEl, randomInitials);
+            
+            userData.avatar = randomInitials;
+            OneLib.save('userData', userData);
+            
+            trackFunction('randint', 2);
+            trackFunction('select', 1);
+            trackFunction('css', 2);
+            trackFunction('html', 1);
+            trackFunction('save', 2);
+            showNotification('Avatar updated!');
+        }
+
+        // Add new task
+        function addTask() {
+            const taskInput = OneLib.select('#task-input');
+            const prioritySelect = OneLib.select('#task-priority');
+            const taskText = OneLib.trim(taskInput.value);
+            
+            if (OneLib.isempty(taskText)) {
+                showNotification('Please enter a task description', 'error');
+                return;
+            }
+            
+            const task = {
+                id: OneLib.uuid(),
+                text: taskText,
+                priority: prioritySelect.value,
+                completed: false,
+                createdAt: OneLib.now(),
+                slug: OneLib.slug(taskText)
+            };
+            
+            tasks.push(task);
+            OneLib.save('tasks', tasks);
+            taskInput.value = '';
+            
+            renderTasks();
+            updateAnalytics();
+            showNotification('Task added successfully!');
+            
+            trackFunction('select', 1);
+            trackFunction('trim', 1);
+            trackFunction('isempty', 2);
+            trackFunction('uuid', 3);
+            trackFunction('now', 1);
+            trackFunction('slug', 2);
+            trackFunction('save', 2);
+        }
+
+        // Render tasks
+        function renderTasks(tasksToRender = tasks) {
+            const taskList = OneLib.select('#task-list');
+            
+            if (OneLib.isempty(tasksToRender)) {
+                OneLib.html(taskList, '<p style="text-align: center; color: #666;">No tasks found</p>');
+                trackFunction('isempty', 2);
+                trackFunction('html', 1);
+                return;
+            }
+            
+            const taskHTML = tasksToRender.map(task => `
+                <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+                    <div class="task-header">
+                        <div class="task-title">${task.text}</div>
+                        <span class="badge" style="background: ${getPriorityColor(task.priority)}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">${OneLib.capitalize(task.priority)}</span>
+                    </div>
+                    <div class="task-meta">
+                        Created ${OneLib.since(task.createdAt)} • ${OneLib.words(task.text).length} words • ID: ${OneLib.truncate(task.id, 8)}
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn btn-small btn-success" onclick="toggleTask('${task.id}')">${task.completed ? 'Undo' : 'Complete'}</button>
+                        <button class="btn btn-small btn-secondary" onclick="duplicateTask('${task.id}')">Duplicate</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteTask('${task.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            OneLib.html(taskList, taskHTML);
+            
+            trackFunction('select', 1);
+            trackFunction('html', 1);
+            trackFunction('capitalize', 1);
+            trackFunction('since', 3);
+            trackFunction('words', 3);
+            trackFunction('truncate', 2);
+        }
+
+        // Get priority color
+        function getPriorityColor(priority) {
+            const colors = { low: '#28a745', medium: '#ffc107', high: '#dc3545' };
+            return colors[priority] || '#6c757d';
+        }
+
+        // Toggle task completion
+        function toggleTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                task.completedAt = task.completed ? OneLib.now() : null;
+                OneLib.save('tasks', tasks);
+                renderTasks();
+                updateAnalytics();
+                showNotification(`Task ${task.completed ? 'completed' : 'reopened'}!`);
+                trackFunction('now', 1);
+                trackFunction('save', 2);
+            }
+        }
+
+        // Duplicate task
+        function duplicateTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                const duplicatedTask = {
+                    ...task,
+                    id: OneLib.uuid(),
+                    text: `${task.text} (Copy)`,
+                    completed: false,
+                    createdAt: OneLib.now(),
+                    slug: OneLib.slug(`${task.text} copy`)
+                };
+                tasks.push(duplicatedTask);
+                OneLib.save('tasks', tasks);
+                renderTasks();
+                updateAnalytics();
+                showNotification('Task duplicated!');
+                trackFunction('uuid', 3);
+                trackFunction('now', 1);
+                trackFunction('slug', 2);
+                trackFunction('save', 2);
+            }
+        }
+
+        // Delete task
+        function deleteTask(taskId) {
+            tasks = tasks.filter(t => t.id !== taskId);
+            OneLib.save('tasks', tasks);
+            renderTasks();
+            updateAnalytics();
+            showNotification('Task deleted!');
+            trackFunction('save', 2);
+        }
+
+        // Search tasks
+        function searchTasks() {
+            const searchTerm = OneLib.lower(OneLib.trim(OneLib.select('#task-search').value));
+            const searchResults = OneLib.select('#search-results');
+            
+            if (OneLib.isempty(searchTerm)) {
+                searchResults.style.display = 'none';
+                renderTasks();
+                return;
+            }
+            
+            const filteredTasks = tasks.filter(task => 
+                OneLib.lower(task.text).includes(searchTerm) || 
+                OneLib.lower(task.priority).includes(searchTerm)
+            );
+            
+            // Show search suggestions
+            const suggestions = OneLib.unique(tasks.map(t => t.text))
+                .filter(text => OneLib.lower(text).includes(searchTerm))
+                .slice(0, 5);
+            
+            if (suggestions.length > 0) {
+                const suggestionsHTML = suggestions.map(suggestion => 
+                    `<div class="search-result" onclick="selectSuggestion('${suggestion}')">${suggestion}</div>`
+                ).join('');
+                OneLib.html(searchResults, suggestionsHTML);
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.style.display = 'none';
+            }
+            
+            renderTasks(filteredTasks);
+            
+            trackFunction('lower', 1);
+            trackFunction('trim', 1);
+            trackFunction('select', 1);
+            trackFunction('isempty', 2);
+            trackFunction('unique', 3);
+            trackFunction('html', 1);
+        }
+
+        // Select search suggestion
+        function selectSuggestion(suggestion) {
+            OneLib.select('#task-search').value = suggestion;
+            OneLib.select('#search-results').style.display = 'none';
+            searchTasks();
+            trackFunction('select', 1);
+        }
+
+        // Clear completed tasks
+        function clearCompleted() {
+            const completedCount = tasks.filter(t => t.completed).length;
+            tasks = tasks.filter(t => !t.completed);
+            OneLib.save('tasks', tasks);
+            renderTasks();
+            updateAnalytics();
+            showNotification(`${completedCount} completed tasks cleared!`);
+            trackFunction('save', 2);
+        }
+
+        // Clear all tasks
+        function clearAllTasks() {
+            const taskCount = tasks.length;
+            tasks = [];
+            OneLib.save('tasks', tasks);
+            renderTasks();
+            updateAnalytics();
+            showNotification(`All ${taskCount} tasks cleared!`);
+            trackFunction('save', 2);
+        }
+
+        // Update analytics
+        function updateAnalytics() {
+            const totalTasks = tasks.length;
+            const completedTasks = tasks.filter(t => t.completed).length;
+            const pendingTasks = totalTasks - completedTasks;
+            const completionRate = totalTasks > 0 ? OneLib.round((completedTasks / totalTasks) * 100, 1) : 0;
+            
+            // Calculate average task length
+            const taskLengths = tasks.map(t => OneLib.words(t.text).length);
+            const avgTaskLength = taskLengths.length > 0 ? OneLib.round(OneLib.avg(taskLengths), 1) : 0;
+            
+            // Calculate productivity score
+            const productivityScore = OneLib.round(completionRate * (avgTaskLength / 10), 0);
+            
+            OneLib.html('#total-tasks', totalTasks);
+            OneLib.html('#completed-tasks', completedTasks);
+            OneLib.html('#pending-tasks', pendingTasks);
+            OneLib.html('#completion-rate', `${completionRate}%`);
+            OneLib.html('#avg-task-length', `${avgTaskLength} words`);
+            OneLib.html('#productivity-score', productivityScore);
+            
+            // Update progress bar
+            OneLib.css('#progress-fill', { width: `${completionRate}%` });
+            OneLib.html('#progress-text', `${completedTasks} of ${totalTasks} tasks completed`);
+            
+            trackFunction('round', 1);
+            trackFunction('words', 3);
+            trackFunction('avg', 3);
+            trackFunction('html', 1);
+            trackFunction('css', 2);
+        }
+
+        // Generate sample data
+        function generateSampleData() {
+            const sampleTasks = [
+                'Complete project documentation',
+                'Review code changes',
+                'Update user interface design',
+                'Fix reported bugs',
+                'Implement new features',
+                'Write unit tests',
+                'Deploy to production',
+                'Update dependencies',
+                'Optimize database queries',
+                'Create user guides'
+            ];
+            
+            const priorities = ['low', 'medium', 'high'];
+            
+            for (let i = 0; i < 5; i++) {
+                const randomTask = sampleTasks[OneLib.randint(0, sampleTasks.length - 1)];
+                const task = {
+                    id: OneLib.uuid(),
+                    text: `${randomTask} ${OneLib.randint(1, 100)}`,
+                    priority: priorities[OneLib.randint(0, priorities.length - 1)],
+                    completed: OneLib.randint(0, 1) === 1,
+                    createdAt: new Date(Date.now() - OneLib.randint(0, 7) * 24 * 60 * 60 * 1000),
+                    slug: OneLib.slug(randomTask)
+                };
+                tasks.push(task);
+            }
+            
+            OneLib.save('tasks', tasks);
+            renderTasks();
+            updateAnalytics();
+            showNotification('Sample data generated!');
+            
+            trackFunction('randint', 2);
+            trackFunction('uuid', 3);
+            trackFunction('slug', 2);
+            trackFunction('save', 2);
+        }
+
+        // Export data as PDF
+        function exportData() {
+            const totalTasks = tasks.length;
+            const completedTasks = tasks.filter(t => t.completed).length;
+            const completionRate = totalTasks > 0 ? OneLib.round((completedTasks / totalTasks) * 100, 1) : 0;
+            const avgTaskLength = tasks.length > 0 ? OneLib.round(OneLib.avg(tasks.map(t => OneLib.words(t.text).length)), 1) : 0;
+            
+            // Create PDF content using OneLib functions
+            const pdfContent = `
+=== TASKFLOW REPORT ===
+Generated: ${OneLib.format(OneLib.now(), 'DD/MM/YYYY HH:mm')}
+
+USER PROFILE:
+Name: ${OneLib.capitalize(userData.name)}
+Email: ${OneLib.lower(userData.email)}
+Joined: ${OneLib.since(userData.joinDate)}
+
+TASK STATISTICS:
+Total Tasks: ${totalTasks}
+Completed: ${completedTasks}
+Pending: ${totalTasks - completedTasks}
+Completion Rate: ${completionRate}%
+Average Task Length: ${avgTaskLength} words
+
+TASKS LIST:
+${tasks.map((task, index) => `
+${index + 1}. ${OneLib.truncate(task.text, 50)}
+   Priority: ${OneLib.capitalize(task.priority)}
+   Status: ${task.completed ? 'COMPLETED' : 'PENDING'}
+   Created: ${OneLib.since(task.createdAt)}
+   Words: ${OneLib.words(task.text).length}
+   Slug: ${OneLib.slug(task.text)}`).join('')}
+
+ONELIB.JS USAGE:
+Functions Used: ${functionsUsed.size}
+Lines Saved: ${linesSaved}
+Dev Time Saved: ${OneLib.round(linesSaved / 10, 1)} hours
+Functions: ${Array.from(functionsUsed).join(', ')}
+
+=== END REPORT ===`;
+            
+            // Copy formatted report to clipboard
+            OneLib.copy(pdfContent);
+            
+            // Also create downloadable text file
+            const blob = new Blob([pdfContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `taskflow-report-${OneLib.format(OneLib.now(), 'YYYY-MM-DD')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Report exported and copied to clipboard!');
+            
+            trackFunction('round', 1);
+            trackFunction('avg', 3);
+            trackFunction('words', 3);
+            trackFunction('format', 2);
+            trackFunction('now', 1);
+            trackFunction('capitalize', 1);
+            trackFunction('lower', 1);
+            trackFunction('since', 3);
+            trackFunction('truncate', 2);
+            trackFunction('slug', 2);
+            trackFunction('copy', 3);
+        }
+
+        // Calculate productivity
+        function calculateProductivity() {
+            const completedToday = tasks.filter(t => {
+                if (!t.completedAt) return false;
+                const today = new Date();
+                const completedDate = new Date(t.completedAt);
+                return completedDate.toDateString() === today.toDateString();
+            }).length;
+            
+            const totalWords = OneLib.sum(tasks.map(t => OneLib.words(t.text).length));
+            const avgWordsPerTask = tasks.length > 0 ? OneLib.round(totalWords / tasks.length, 1) : 0;
+            
+            showNotification(`Today: ${completedToday} tasks completed. Avg: ${avgWordsPerTask} words per task.`);
+            
+            trackFunction('sum', 3);
+            trackFunction('words', 3);
+            trackFunction('round', 1);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = OneLib.select('#notification');
+            OneLib.html(notification, message);
+            
+            const bgColor = type === 'error' ? '#dc3545' : '#28a745';
+            OneLib.css(notification, { backgroundColor: bgColor });
+            
+            OneLib.cls(notification, 'show');
+            
+            setTimeout(() => {
+                OneLib.cls(notification, 'show');
+            }, 3000);
+            
+            trackFunction('select', 1);
+            trackFunction('html', 1);
+            trackFunction('css', 2);
+            trackFunction('cls', 2);
+        }
+
+        // Initialize app
+        function initApp() {
+            initUserProfile();
+            renderTasks();
+            updateAnalytics();
+            updateStats();
+            
+            // Hide search results when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-box')) {
+                    OneLib.select('#search-results').style.display = 'none';
+                }
+            });
+        }
+
+        // Start the app
+        initApp();
+        
+        // Show initial notification
+        setTimeout(() => {
+            showNotification('TaskFlow loaded! Built entirely with OneLib.js');
+        }, 1000);
+    </script>
+</body>
+</html>
